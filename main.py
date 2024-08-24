@@ -27,7 +27,7 @@ def get_args_parser():
     parser.add_argument('--lr_linear_proj_mult', default=0.1, type=float)
     parser.add_argument('--batch_size', default=2, type=int)
     parser.add_argument('--weight_decay', default=1e-4, type=float)
-    parser.add_argument('--epochs', default=50, type=int)
+    parser.add_argument('--epochs', default=10, type=int)
     parser.add_argument('--lr_drop', default=40, type=int)
     parser.add_argument('--lr_drop_balanced', default=10, type=int)
     parser.add_argument('--lr_drop_epochs', default=None, type=int, nargs='+')
@@ -109,7 +109,7 @@ def get_args_parser():
     parser.add_argument('--coco_panoptic_path', type=str)
     parser.add_argument('--remove_difficult', action='store_true')
 
-    parser.add_argument('--output_dir', default='',
+    parser.add_argument('--output_dir', default='output',
                         help='path where to save, empty for no saving')
     parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
@@ -162,7 +162,7 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print('number of params:', n_parameters)
 
-    cls_order = generate_cls_order(seed=args.seed_cls)   
+    cls_order = list(range(0, 220))  
 
     if args.data_setting=='tfs':
         total_phase_num = args.num_of_phases
@@ -347,8 +347,7 @@ def main(args):
 
   
         else:
-            if phase_idx >= 1:
-                old_model = copy.deepcopy(model)
+            old_model = copy.deepcopy(model)
             for epoch in range(0, args.epochs):
                 if args.distributed:
                     sampler_train.set_epoch(epoch)
@@ -375,7 +374,7 @@ def main(args):
                     print("Testing results for new.")   
 
             if args.balanced_ft and phase_idx >= 1:
-                for epoch in range(0, 20):
+                for epoch in range(0, 7):
                     if args.distributed:
                         sampler_train_balanced.set_epoch(epoch)
 

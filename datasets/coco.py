@@ -144,8 +144,10 @@ def build(image_set, args, cls_order, phase_idx, incremental, incremental_val, v
     assert root.exists(), f'provided COCO path {root} does not exist'
     mode = 'instances'
     PATHS = {
-        "train": (root / "train2017", root / "annotations" / f'{mode}_train2017.json'),
-        "val": (root / "val2017", root / "annotations" / f'{mode}_val2017.json'),
+        "train": ("/kaggle/input/mapillary-traffic-sign-dataset/mtsd_fully_annotated_train_images/images", \
+                  "/kaggle/input/mtsd-preprocessing/train_output_file_coco.json"),
+        "val": ("/kaggle/input/mapillary-traffic-sign-dataset/mtsd_v2_fully_annotated_images.val.zip/images", \
+                "/kaggle/input/mtsd-preprocessing/val_output_file_coco.json"),
     }
 
     num_of_phases = args.num_of_phases

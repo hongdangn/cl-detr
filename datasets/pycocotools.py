@@ -56,14 +56,14 @@ class COCO:
                 if tfs_or_tfh == 'tfs':
                     if incremental_val:
                         if val_each_phase:
-                            selected_cls_this_phase = cls_order[phase_idx*cls_per_phase:(phase_idx+1)*cls_per_phase]
+                            selected_cls_this_phase = cls_order[0:150]
                         else:
-                            selected_cls_this_phase = cls_order[:(phase_idx+1)*cls_per_phase]
+                            selected_cls_this_phase = cls_order
                     else:
                         selected_cls_this_phase = cls_order[phase_idx*cls_per_phase:(phase_idx+1)*cls_per_phase]
                 elif tfs_or_tfh == 'tfh':
                     if phase_idx == 0:
-                        selected_cls_this_phase = cls_order[:40]
+                        selected_cls_this_phase = cls_order[:150]
                     else:
                         if incremental_val:
                             if val_each_phase:
