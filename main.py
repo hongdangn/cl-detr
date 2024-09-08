@@ -331,11 +331,7 @@ def main(args):
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                     lr_scheduler.step()
  
-            print("Testing all....")
-            test_stats, coco_evaluator = evaluate(
-                model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
-            )      
-
+            print("Finish training phase 1....\n-------------------------------------------------\n")
   
         else:
             old_model = copy.deepcopy(model)
@@ -366,6 +362,8 @@ def main(args):
 
                     test_stats, coco_evaluator = evaluate(model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir)
                     print("Balanced FT - Testing results for all.")
+            
+            print("Finish training phase 2....\n-------------------------------------------------\n")
 
             if args.output_dir:
                 checkpoint_paths = [output_dir / 'checkpoint.pth']
