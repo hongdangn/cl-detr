@@ -297,7 +297,7 @@ def main(args):
 
         if phase_idx==0:
 
-            ckpt_path = './phase_0.pth' 
+            ckpt_path = "./phase_0.pth"
             if os.path.exists(ckpt_path):
          
                 checkpoint = torch.load(ckpt_path, map_location='cpu')
@@ -381,6 +381,14 @@ def main(args):
                     train_stats = train_one_epoch(
                         model, criterion, data_loader_train_balanced, optimizer_balanced, device, epoch, args.clip_max_norm)
                     lr_scheduler_balanced.step()
+
+                    utils.save_on_master({
+                        'model': model_without_ddp.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'lr_scheduler': lr_scheduler.state_dict(),
+                        'epoch': epoch,
+                        'args': args,
+                    }, output_dir / f"checkpoint_e{epoch + args.epochs}.pth")
 
                     test_stats, coco_evaluator = evaluate(model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir)
                     print("Balanced FT - Testing results for all.")
