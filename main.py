@@ -176,6 +176,8 @@ def main(args):
     ann_memory = {}
     imgToAnns_memory = {}
 
+    os.mkdir(args.output_dir)
+
     for phase_idx in range(total_phase_num):
         print('training phase '+ str(phase_idx) + '...')
         dataset_train = build_dataset(image_set='train', args=args, cls_order=cls_order, \
@@ -284,8 +286,8 @@ def main(args):
             checkpoint = torch.load(args.frozen_weights, map_location='cpu')
             model_without_ddp.detr.load_state_dict(checkpoint['model'])
         
-        os.mkdir(args.output_dir)
         this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
+        os.mkdir(this_phase_output_dir)
         output_dir = Path(this_phase_output_dir)
 
         print("start training")
