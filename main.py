@@ -39,8 +39,8 @@ def get_args_parser():
     parser.add_argument('--sgd', action='store_true')
 
     # Variants of Deformable DETR
-    parser.add_argument('--with_box_refine', default=False, action='store_true')
-    parser.add_argument('--two_stage', default=False, action='store_true')
+    parser.add_argument('--with_box_refine', default=True, action='store_true')
+    parser.add_argument('--two_stage', default=True, action='store_true')
 
     # Model parameters
     parser.add_argument('--frozen_weights', type=str, default=None,
@@ -283,10 +283,10 @@ def main(args):
         if args.frozen_weights is not None:
             checkpoint = torch.load(args.frozen_weights, map_location='cpu')
             model_without_ddp.detr.load_state_dict(checkpoint['model'])
-
+        
+        os.mkdir(args.output_dir)
         this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
         output_dir = Path(this_phase_output_dir)
-        Path(this_phase_output_dir).mkdir(parents=True, exist_ok=True)
 
         print("start training")
         start_time = time.time()
@@ -330,6 +330,18 @@ def main(args):
                     train_stats = train_one_epoch(
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                     lr_scheduler.step()
+
+                    this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
+                    output_dir = Path(this_phase_output_dir)
+                    Path(this_phase_output_dir).mkdir(parents=True, exist_ok=True)
+
+                    utils.save_on_master({
+                        'model': model_without_ddp.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'lr_scheduler': lr_scheduler.state_dict(),
+                        'epoch': epoch,
+                        'args': args,
+                    }, output_dir / f"checkpoint_e{epoch}.pth")
  
             print("Finish training phase 1....\n-------------------------------------------------\n")
   
@@ -345,6 +357,18 @@ def main(args):
                     train_stats = train_one_epoch(
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                 lr_scheduler.step()
+
+                this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
+                output_dir = Path(this_phase_output_dir)
+                Path(this_phase_output_dir).mkdir(parents=True, exist_ok=True)
+
+                utils.save_on_master({
+                    'model': model_without_ddp.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'lr_scheduler': lr_scheduler.state_dict(),
+                    'epoch': epoch,
+                    'args': args,
+                }, output_dir / f"checkpoint_e{epoch}.pth")
 
                 test_stats, coco_evaluator = evaluate(
                     model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
