@@ -331,10 +331,6 @@ def main(args):
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                     lr_scheduler.step()
 
-                    this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
-                    output_dir = Path(this_phase_output_dir)
-                    Path(this_phase_output_dir).mkdir(parents=True, exist_ok=True)
-
                     utils.save_on_master({
                         'model': model_without_ddp.state_dict(),
                         'optimizer': optimizer.state_dict(),
@@ -376,7 +372,7 @@ def main(args):
                 print("Testing results for all.")
 
             if args.balanced_ft and phase_idx >= 1:
-                for epoch in range(0, 7):
+                for epoch in range(0, 10):
                     if args.distributed:
                         sampler_train_balanced.set_epoch(epoch)
 
@@ -388,18 +384,6 @@ def main(args):
                     print("Balanced FT - Testing results for all.")
             
             print("Finish training phase 2....\n-------------------------------------------------\n")
-
-            if args.output_dir:
-                checkpoint_paths = [output_dir / 'checkpoint.pth']
-
-                for checkpoint_path in checkpoint_paths:
-                    utils.save_on_master({
-                        'model': model_without_ddp.state_dict(),
-                        'optimizer': optimizer.state_dict(),
-                        'lr_scheduler': lr_scheduler.state_dict(),
-                        'epoch': epoch,
-                        'args': args,
-                    }, checkpoint_path)
 
             total_time = time.time() - start_time
             total_time_str = str(datetime.timedelta(seconds=int(total_time)))
