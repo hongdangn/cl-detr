@@ -141,7 +141,7 @@ def make_coco_transforms(image_set):
 
 def build(image_set, args, cls_order, phase_idx, incremental, incremental_val, val_each_phase, balanced_ft):
     root = Path(args.coco_path)
-    assert root.exists(), f'provided COCO path {root} does not exist'
+
     mode = 'instances'
     PATHS = {
         "train": ("/kaggle/input/mapillary-traffic-sign-dataset/mtsd_fully_annotated_train_images/images", \
