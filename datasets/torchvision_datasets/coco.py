@@ -7,14 +7,15 @@ import os
 import os.path
 import tqdm
 from io import BytesIO
-from datasets.pycocotools import COCO
+# from datasets.pycocotools import COCO
+from pycocotools.coco import COCO
 
 class CocoDetection(VisionDataset):
 
     def __init__(self, root, annFile, args, cls_order, phase_idx, incremental, incremental_val, val_each_phase, balanced_ft, tfs_or_tfh, num_of_phases, cls_per_phase, seed_data, transform=None, target_transform=None, transforms=None,cache_mode=False, local_rank=0, local_size=1):
         super(CocoDetection, self).__init__(root, transforms, transform, target_transform)
-        self.coco = COCO(args, cls_order, phase_idx, incremental, incremental_val, val_each_phase, balanced_ft, tfs_or_tfh, num_of_phases, cls_per_phase, seed_data, annFile)
-        self.ids = list(sorted(self.coco.imgs.keys()))
+        self.coco = COCO(annFile)
+        self.ids = self.coco.getImgIds()
         self.cache_mode = cache_mode
         self.local_rank = local_rank
         self.local_size = local_size
