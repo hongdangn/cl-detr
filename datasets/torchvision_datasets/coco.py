@@ -25,10 +25,10 @@ class CocoDetection(VisionDataset):
                 self.ids.extend(img_ids)
             
             self.ids = list(set(self.ids))
+            print("CURRENT TRAIN CAT_IDS: {}\nLEN_IDS ".format(self.cats, len(self.ids)))
         else:
             self.ids = self.coco.getImgIds()
-
-        print("CURRENT TRAIN/VAL CAT_IDS: ", self.cats);
+            print("CURRENT VAL CAT_IDS: {}\nLEN_IDS ".format(self.coco.getAnnIds(), len(self.ids)))
 
         self.cache_mode = cache_mode
         self.local_rank = local_rank
