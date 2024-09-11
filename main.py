@@ -340,11 +340,6 @@ def main(args):
                         'epoch': epoch,
                         'args': args,
                     }, output_dir / f"checkpoint_e{epoch}.pth")
-
-                    print("TESTING ALL....")
-                    test_stats, coco_evaluator = evaluate(
-                        model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
-                    )      
  
             print("Finish training phase 1....\n-------------------------------------------------\n")
   
