@@ -340,6 +340,11 @@ def main(args):
                         'epoch': epoch,
                         'args': args,
                     }, output_dir / f"checkpoint_e{epoch}.pth")
+
+                    print("TESTING ALL....")
+                    test_stats, coco_evaluator = evaluate(
+                        model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
+                    )      
  
             print("Finish training phase 1....\n-------------------------------------------------\n")
   
@@ -374,7 +379,7 @@ def main(args):
                 print("Testing results for all.")
 
             if args.balanced_ft and phase_idx >= 1:
-                for epoch in range(0, 10):
+                for epoch in range(0, 5):
                     if args.distributed:
                         sampler_train_balanced.set_epoch(epoch)
 

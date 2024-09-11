@@ -144,9 +144,9 @@ def build(image_set, args, cls_order, phase_idx, incremental, incremental_val, v
 
     mode = 'instances'
     PATHS = {
-        "train": ("/home/kc/cl/MTSD/mtsd_fully_annotated_train_images", \
+        "train": ("/home/kc/cl/MTSD/mtsd_fully_annotated_train_images/images", \
                   "/mnt/thanhpd/code/cl-rtdetr-abr/mtsd_cl/CL_rtdetr/train_output_file_coco.json"),
-        "val": ("/home/kc/cl/MTSD/mtsd_fully_annotated_val_images", \
+        "val": ("/home/kc/cl/MTSD/mtsd_fully_annotated_val_images/images", \
                 "/mnt/thanhpd/code/cl-rtdetr-abr/mtsd_cl/CL_rtdetr/val_output_file_coco.json"),
     }
 
