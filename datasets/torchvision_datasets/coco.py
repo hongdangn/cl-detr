@@ -28,6 +28,8 @@ class CocoDetection(VisionDataset):
         else:
             self.ids = self.coco.getImgIds()
 
+        print("CURRENT TRAIN/VAL CAT_IDS: ", self.cats);
+
         self.cache_mode = cache_mode
         self.local_rank = local_rank
         self.local_size = local_size
