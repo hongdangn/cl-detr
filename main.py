@@ -178,8 +178,8 @@ def main(args):
     img_memory = {}
     ann_memory = {}
     imgToAnns_memory = {}
-    if not os.path.exists(args.output_dir):
-        os.mkdir(args.output_dir)
+    # if not os.path.exists(args.output_dir):
+    #     os.mkdir(args.output_dir)
 
     for phase_idx in range(total_phase_num):
         if phase_idx == 0:
@@ -290,8 +290,8 @@ def main(args):
         # if args.frozen_weights is not None:
         
         this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
-        if not os.path.exists(this_phase_output_dir):
-            os.mkdir(this_phase_output_dir)
+        # if not os.path.exists(this_phase_output_dir):
+        #     os.mkdir(this_phase_output_dir)
         output_dir = Path(this_phase_output_dir)
 
         print("start training")
