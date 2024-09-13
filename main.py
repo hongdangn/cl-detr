@@ -178,8 +178,8 @@ def main(args):
     img_memory = {}
     ann_memory = {}
     imgToAnns_memory = {}
-
-    os.mkdir(args.output_dir)
+    if not os.path.exists(args.output_dir):
+        os.mkdir(args.output_dir)
 
     for phase_idx in range(total_phase_num):
         if phase_idx == 0:
