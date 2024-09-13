@@ -159,7 +159,7 @@ def main(args):
 
     model, criterion, postprocessors = build_model(args)
     model.to(device)
-    checkpoint = torch.load(args.resume_ckpt, map_location='gpu')
+    checkpoint = torch.load(args.resume_ckpt, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
 
     model_without_ddp = model
