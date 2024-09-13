@@ -351,6 +351,9 @@ def main(args):
             for epoch in range(0, args.epochs):
                 if args.distributed:
                     sampler_train.set_epoch(epoch)
+                test_stats, coco_evaluator = evaluate(
+                    model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
+                )
                 if phase_idx >= 1:
                     train_stats = train_one_epoch_incremental(
                         model, old_model, args.ref_loss_overall_coef, criterion, postprocessors, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
@@ -368,10 +371,6 @@ def main(args):
                 #         'args': args,
                 #     }, output_dir / f"checkpoint_e{epoch + 11}.pth")
                 # except 
-
-                test_stats, coco_evaluator = evaluate(
-                    model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
-                )
                 print("Testing results for all.")
 
             if args.balanced_ft and phase_idx >= 1:
