@@ -290,7 +290,8 @@ def main(args):
         # if args.frozen_weights is not None:
         
         this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
-        os.mkdir(this_phase_output_dir)
+        if not os.path.exists(this_phase_output_dir):
+            os.mkdir(this_phase_output_dir)
         output_dir = Path(this_phase_output_dir)
 
         print("start training")
