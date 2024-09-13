@@ -363,15 +363,13 @@ def main(args):
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                 lr_scheduler.step()
 
-                # try:
-                #     utils.save_on_master({
-                #         'model': model_without_ddp.state_dict(),
-                #         'optimizer': optimizer.state_dict(),
-                #         'lr_scheduler': lr_scheduler.state_dict(),
-                #         'epoch': epoch,
-                #         'args': args,
-                #     }, output_dir / f"checkpoint_e{epoch + 11}.pth")
-                # except 
+                utils.save_on_master({
+                    'model': model_without_ddp.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'lr_scheduler': lr_scheduler.state_dict(),
+                    'epoch': epoch,
+                    'args': args,
+                }, output_dir / f"checkpoint_e{epoch + 11}.pth")
                 print("Testing results for all.")
 
             if args.balanced_ft and phase_idx >= 1:
