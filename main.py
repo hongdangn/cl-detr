@@ -45,6 +45,7 @@ def get_args_parser():
     # Model parameters
     parser.add_argument('--frozen_weights', type=str, default=None,
                         help="Path to the pretrained model. If set, only the mask head will be trained")
+    parser.add_argument("--resume_ckpt", type=str)
 
     # * Backbone
     parser.add_argument('--backbone', default='resnet50', type=str,
@@ -144,8 +145,8 @@ def main(args):
     utils.init_distributed_mode(args)
     print("git:\n  {}\n".format(utils.get_sha()))
 
-    if args.frozen_weights is not None:
-        assert args.masks, "Frozen training is meant for segmentation only"
+    # if args.frozen_weights is not None:
+    #     assert args.masks, "Frozen training is meant for segmentation only"
     print(args)
 
     device = torch.device(args.device)
@@ -158,6 +159,8 @@ def main(args):
 
     model, criterion, postprocessors = build_model(args)
     model.to(device)
+    checkpoint = torch.load(args.resume_ckpt, map_location='gpu')
+    model.load_state_dict(checkpoint['model'])
 
     model_without_ddp = model
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -179,6 +182,8 @@ def main(args):
     os.mkdir(args.output_dir)
 
     for phase_idx in range(total_phase_num):
+        if phase_idx == 0:
+            continue
         print('training phase '+ str(phase_idx) + '...')
         dataset_train = build_dataset(image_set='train', args=args, cls_order=cls_order, \
             phase_idx=phase_idx, incremental=True, incremental_val=False, val_each_phase=False)
@@ -282,9 +287,7 @@ def main(args):
 
         base_ds = get_coco_api_from_dataset(dataset_val)
 
-        if args.frozen_weights is not None:
-            checkpoint = torch.load(args.frozen_weights, map_location='cpu')
-            model_without_ddp.detr.load_state_dict(checkpoint['model'])
+        # if args.frozen_weights is not None:
         
         this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
         os.mkdir(this_phase_output_dir)
@@ -356,17 +359,15 @@ def main(args):
                         model, criterion, data_loader_train, optimizer, device, epoch, args.clip_max_norm)
                 lr_scheduler.step()
 
-                this_phase_output_dir = args.output_dir + '/phase_'+str(phase_idx)
-                output_dir = Path(this_phase_output_dir)
-                Path(this_phase_output_dir).mkdir(parents=True, exist_ok=True)
-
-                utils.save_on_master({
-                    'model': model_without_ddp.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'lr_scheduler': lr_scheduler.state_dict(),
-                    'epoch': epoch,
-                    'args': args,
-                }, output_dir / f"checkpoint_e{epoch}.pth")
+                # try:
+                #     utils.save_on_master({
+                #         'model': model_without_ddp.state_dict(),
+                #         'optimizer': optimizer.state_dict(),
+                #         'lr_scheduler': lr_scheduler.state_dict(),
+                #         'epoch': epoch,
+                #         'args': args,
+                #     }, output_dir / f"checkpoint_e{epoch + 11}.pth")
+                # except 
 
                 test_stats, coco_evaluator = evaluate(
                     model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
