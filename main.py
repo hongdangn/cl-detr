@@ -387,7 +387,7 @@ def main(args):
                         'lr_scheduler': lr_scheduler.state_dict(),
                         'epoch': epoch,
                         'args': args,
-                    }, output_dir / f"checkpoint_e{epoch + args.epochs}.pth")
+                    }, output_dir / f"checkpoint_e{epoch + 50}.pth")
 
                     test_stats, coco_evaluator = evaluate(model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir)
                     print("Balanced FT - Testing results for all.")
