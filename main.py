@@ -369,7 +369,7 @@ def main(args):
                     'lr_scheduler': lr_scheduler.state_dict(),
                     'epoch': epoch,
                     'args': args,
-                }, output_dir / f"checkpoint_e{epoch + 11}.pth")
+                }, output_dir / f"checkpoint_e{epoch + 14}.pth")
                 print("Testing results for all.")
 
             if args.balanced_ft and phase_idx >= 1:
